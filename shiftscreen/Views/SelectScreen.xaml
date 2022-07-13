@@ -1,0 +1,33 @@
+﻿<Window x:Class="ShiftScreen.Views.SelectScreen"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:ShiftScreen"
+        mc:Ignorable="d"
+        AllowsTransparency="True"  Background="Transparent"
+        WindowState="Maximized" WindowStyle="None">
+    <Grid
+        x:Name="theGrid"
+        MouseDown="Grid_MouseDown"
+        MouseUp="Grid_MouseUp"
+        MouseMove="Grid_MouseMove"
+        Background="#01000000"
+    ><Canvas>
+            <!-- This canvas is overlaid over the previous canvas and is used to
+                place the rectangle that implements the drag selection box. -->
+            <Path Name="Path" Fill="#CC000000">
+                <Path.Data>
+                    <CombinedGeometry GeometryCombineMode="Xor">
+                        <CombinedGeometry.Geometry1>
+                            <RectangleGeometry Rect="0,0,10000,10000"/>
+                        </CombinedGeometry.Geometry1>
+                        <CombinedGeometry.Geometry2>
+                            <RectangleGeometry x:Name="Selection" Rect="0,0,0,0"/>
+                        </CombinedGeometry.Geometry2>
+                    </CombinedGeometry>
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Grid>
+</Window>
