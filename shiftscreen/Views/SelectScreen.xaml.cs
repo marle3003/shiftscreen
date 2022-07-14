@@ -5,9 +5,17 @@ namespace ShiftScreen.Views;
 
 public partial class SelectScreen : Window
 {
+    private bool _selectionMode; // Set to 'true' when mouse is held down.
+    private Point _firstPosition; // The point where the mouse button was clicked down.
+
     public SelectScreen()
     {
         InitializeComponent();
+
+        Left = 0;
+        Top = 0;
+        Width = SystemParameters.VirtualScreenWidth;
+        Height = SystemParameters.VirtualScreenHeight;
     }
 
     public Rect GetSceen()
@@ -15,14 +23,10 @@ public partial class SelectScreen : Window
         return Selection.Rect;
     }
 
-    bool mouseDown = false; // Set to 'true' when mouse is held down.
-    System.Windows.Point _firstPosition; // The point where the mouse button was clicked down.
-    private System.Windows.Point _secondPosition;
-
     private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
     {
         // Capture and track the mouse.
-        mouseDown = true;
+        _selectionMode = true;
         _firstPosition = e.GetPosition(theGrid);
         theGrid.CaptureMouse();
 
@@ -33,21 +37,18 @@ public partial class SelectScreen : Window
     private void Grid_MouseUp(object sender, MouseButtonEventArgs e)
     {
         // Release the mouse capture and stop tracking it.
-        mouseDown = false;
+        _selectionMode = false;
         theGrid.ReleaseMouseCapture();
 
-        _secondPosition = e.GetPosition(theGrid);
         DialogResult = true;
     }
 
     private void Grid_MouseMove(object sender, MouseEventArgs e)
     {
-        if (mouseDown)
+        if (_selectionMode)
         {
             // When the mouse is held down, reposition the drag selection box.
-
             var mousePos = e.GetPosition(theGrid);
-
             var rect = new Rect();
 
             if (_firstPosition.X < mousePos.X)

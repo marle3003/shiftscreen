@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ShiftScreen"
         mc:Ignorable="d"
         AllowsTransparency="True"  Background="Transparent"
-        WindowState="Maximized" WindowStyle="None">
+        WindowStyle="None">
     <Grid
         x:Name="theGrid"
         MouseDown="Grid_MouseDown"
@@ -16,7 +16,7 @@
     ><Canvas>
             <!-- This canvas is overlaid over the previous canvas and is used to
                 place the rectangle that implements the drag selection box. -->
-            <Path Name="Path" Fill="#CC000000">
+            <Path Name="Path" Fill="#99000000">
                 <Path.Data>
                     <CombinedGeometry GeometryCombineMode="Xor">
                         <CombinedGeometry.Geometry1>
