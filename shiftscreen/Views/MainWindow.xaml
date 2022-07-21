@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ShiftScreen"
         mc:Ignorable="d"
-        Title="ScreenSharer" Height="450" Width="800"
+        Title="shiftscreen" Height="450" Width="800"
         WindowStyle="None"
         ResizeMode="CanResizeWithGrip"
         AllowsTransparency="True"
@@ -16,7 +16,7 @@
         <Image Name="viewer" MouseLeftButtonDown="Viewer_OnMouseLeftButtonDown" />
         <Grid Height="0" Margin="0" Name="ControlsGrid" VerticalAlignment="Bottom" Background="Black">
             <StackPanel Name="ControlStack" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Button Name="FitWindowSize">Fit Size</Button>
+                <Button Name="FitWindowSize" Visibility="Collapsed">Fit Size</Button>
                 <Button Name="SelectScreen" Click="SelectScreen_OnClick">Select Screen</Button>
                 <Button Name="Close" Click="Close_OnClick" >Close</Button>
             </StackPanel>
