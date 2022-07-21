@@ -1,2 +1,2 @@
 # shiftscreen
-shiftscreen helps to share with big screen
+With shiftscreen you can select an area on the desktop which is mirrored in the app. This can be helpful to only share an area of your desktop over Microsoft Teams or similar tools. Instead of selecting the desktop or a specific app, you only need to select shiftscreen. The annoying switching between apps is no longer necessary. Shiftscreen also supports multiple monitors and includes your mouse pointer.
