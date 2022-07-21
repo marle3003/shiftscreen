@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-dotnet@v1
         with:
-          dotnet-version 6.0
+          dotnet-version: 6.0
       - run: dotnet restore ${{ env.PROJECT_PATH }}
       - run: dotnet build ${{ env.PROJECT_PATH }} - Release --no-restore
       - run: dotnet publish ${{ env.PROJECT_PATH }} -c Release --self-contained true -r win-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true --no-build
