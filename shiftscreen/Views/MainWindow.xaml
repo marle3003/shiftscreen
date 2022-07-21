@@ -19,6 +19,7 @@
                 <Button Name="FitWindowSize" Visibility="Collapsed">Fit Size</Button>
                 <Button Name="SelectScreen" Click="SelectScreen_OnClick">Select Screen</Button>
                 <Button Name="Close" Click="Close_OnClick" >Close</Button>
+                <Button Name="Help" Click="Help_OnClick" >Help</Button>
             </StackPanel>
         </Grid>
 

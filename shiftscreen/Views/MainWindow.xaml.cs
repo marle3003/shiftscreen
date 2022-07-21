@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -24,10 +25,12 @@ namespace ShiftScreen.Views
         private DispatcherTimer? _timer;
         private WriteableBitmap? _bitmap;
         private readonly CaptureSettings _settings;
+        private readonly Screen _screen;
 
         public MainWindow(IOptions<CaptureSettings> settings)
         {
             _settings = settings.Value;
+            _screen = new Screen(settings.Value);
 
             InitializeComponent();
 
@@ -36,6 +39,7 @@ namespace ShiftScreen.Views
             Icon = icon;
 
             Update();
+            _screen.Show();
         }
 
         private void Update()
@@ -52,6 +56,8 @@ namespace ShiftScreen.Views
             _timer.Tick += CopyScreen!;
             _timer.Interval = new TimeSpan(0, 0, 0, 0, 1000 / _settings.Fps);
             _timer.Start();
+
+            _screen.Update();
         }
 
         private void CopyScreen(object sender, EventArgs e)
@@ -155,6 +161,15 @@ namespace ShiftScreen.Views
             ControlStack.Orientation = Width < 350 ? Orientation.Vertical : Orientation.Horizontal;
             ((DoubleAnimation)storyShow.Children[0]).To = Width < 350 ? 150 : 66;
             ((DoubleAnimation)storyHide.Children[0]).From = Width < 350 ? 150 : 66;
+        }
+
+        private void Help_OnClick(object sender, RoutedEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "https://github.com/marle3003/shiftscreen",
+                UseShellExecute = true
+            });
         }
     }
 }
