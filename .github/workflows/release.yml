@@ -17,7 +17,7 @@ jobs:
         with:
           dotnet-version: 6.0.x
       - run: dotnet restore ${{ env.PROJECT_PATH }}
-      - run: dotnet build ${{ env.PROJECT_PATH }} -c Release --no-restore
+      - run: dotnet build ${{ env.PROJECT_PATH }} -c Release --no-restore /p:PublishSingleFile=true
       - run: dotnet publish ${{ env.PROJECT_PATH }} -c Release --self-contained true -r win-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true --no-build
       - uses: actions/create-release@v1
         id: create_release
