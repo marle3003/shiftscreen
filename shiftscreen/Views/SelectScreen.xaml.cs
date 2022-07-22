@@ -12,15 +12,21 @@ public partial class SelectScreen : Window
     {
         InitializeComponent();
 
-        Left = 0;
-        Top = 0;
+        Left = SystemParameters.VirtualScreenLeft;
+        Top = SystemParameters.VirtualScreenTop;
         Width = SystemParameters.VirtualScreenWidth;
         Height = SystemParameters.VirtualScreenHeight;
     }
 
     public Rect GetSceen()
     {
-        return Selection.Rect;
+        var rect = Selection.Rect;
+        return new Rect(
+            Left + rect.Left,
+            Top + rect.Top,
+            rect.Width,
+            rect.Height
+        );
     }
 
     private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
@@ -74,6 +80,14 @@ public partial class SelectScreen : Window
             }
 
             Selection.Rect = rect;
+        }
+    }
+
+    private void SelectScreen_OnKeyUp(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Escape)
+        {
+            DialogResult = false;
         }
     }
 }

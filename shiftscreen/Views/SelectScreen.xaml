@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ShiftScreen"
         mc:Ignorable="d"
         AllowsTransparency="True"  Background="Transparent"
-        WindowStyle="None">
+        WindowStyle="None" KeyUp="SelectScreen_OnKeyUp">
     <Grid
         x:Name="theGrid"
         MouseDown="Grid_MouseDown"

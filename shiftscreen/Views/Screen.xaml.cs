@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -7,7 +6,7 @@ using ShiftScreen.Settings;
 using ShiftScreen.Utils;
 using Window = System.Windows.Window;
 
-namespace ShiftScreen;
+namespace ShiftScreen.Views;
 
 public partial class Screen : Window
 {
@@ -19,19 +18,22 @@ public partial class Screen : Window
 
         InitializeComponent();
 
-        Left = 0;
-        Top = 0;
+        Left = SystemParameters.VirtualScreenLeft;
+        Top = SystemParameters.VirtualScreenTop;
         Width = SystemParameters.VirtualScreenWidth;
         Height = SystemParameters.VirtualScreenHeight;
     }
 
     public void Update()
     {
+        var left = Math.Abs(Left) + _settings.X;
+        var top = Math.Abs(Top) + _settings.Y;
+
         double borderSpace = Math.Ceiling(_settings.Style.BorderWidth / 2.0);
         double space = Math.Floor(_settings.Style.BorderWidth % 2.0);
         var rect = new Rect(
-            _settings.Start.X - borderSpace,
-            _settings.Start.Y - borderSpace,
+            left - borderSpace,
+            top - borderSpace,
             _settings.Width + _settings.Style.BorderWidth + space,
             _settings.Height + _settings.Style.BorderWidth + space);
         Presentation.Rect = rect;

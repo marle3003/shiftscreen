@@ -13,7 +13,6 @@ using System.Windows.Threading;
 using Microsoft.Extensions.Options;
 using ShiftScreen.Settings;
 using ShiftScreen.Utils;
-using Point = ShiftScreen.Settings.Point;
 
 namespace ShiftScreen.Views
 {
@@ -68,7 +67,7 @@ namespace ShiftScreen.Views
                     System.Drawing.Imaging.PixelFormat.Format32bppArgb, _bitmap.BackBuffer);
 
                 using var g = Graphics.FromImage(screenBmp);
-                g.CopyFromScreen(_settings.Start.X, _settings.Start.Y, 0, 0,
+                g.CopyFromScreen(_settings.X, _settings.Y, 0, 0,
                     new System.Drawing.Size()
                     {
                         Width = _settings.Width,
@@ -101,8 +100,8 @@ namespace ShiftScreen.Views
                     if (User32.GetIconInfo(iconPointer, out iconInfo))
                     {
                         // calculate the correct position of the cursor
-                        iconX = cursorInfo.ptScreenPos.x - iconInfo.xHotspot - _settings.Start.X;
-                        iconY = cursorInfo.ptScreenPos.y - iconInfo.yHotspot - _settings.Start.Y;
+                        iconX = cursorInfo.ptScreenPos.x - iconInfo.xHotspot - _settings.X;
+                        iconY = cursorInfo.ptScreenPos.y - iconInfo.yHotspot - _settings.Y;
 
                         // draw the cursor icon on top of the captured screen image
                         User32.DrawIcon(g.GetHdc(), iconX, iconY, cursorInfo.hCursor);
@@ -129,7 +128,8 @@ namespace ShiftScreen.Views
             {
                 var screen = dialog.GetSceen();
                 dialog.Close();
-                _settings.Start = new Point { X = (int)screen.X, Y = (int)screen.Y };
+                _settings.X = (int)screen.X;
+                _settings.Y = (int)screen.Y;
                 _settings.Width = (int)screen.Width;
                 _settings.Height = (int)screen.Height;
                 Update();
@@ -138,12 +138,12 @@ namespace ShiftScreen.Views
 
         private bool IsPointInScreen(int x, int y)
         {
-            if (x < _settings.Start.X || x > _settings.Start.X + _settings.Width)
+            if (x < _settings.X || x > _settings.X + _settings.Width)
             {
                 return false;
             }
 
-            if (y < _settings.Start.Y || y > _settings.Start.Y + _settings.Height)
+            if (y < _settings.Y || y > _settings.Y + _settings.Height)
             {
                 return false;
             }
