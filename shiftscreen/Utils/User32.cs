@@ -37,9 +37,6 @@ public class User32
     public static extern bool GetCursorInfo(out CURSORINFO pci);
 
     [DllImport("user32.dll")]
-    public static extern IntPtr CopyIcon(IntPtr hIcon);
-
-    [DllImport("user32.dll")]
     public static extern bool DrawIcon(IntPtr hdc, int x, int y, IntPtr hIcon);
 
     [DllImport("user32.dll")]
@@ -53,4 +50,8 @@ public class User32
 
     [DllImport("user32.dll", EntryPoint = "SetWindowLong", SetLastError = true)]
     public static extern Int32 IntSetWindowLong(IntPtr hWnd, int nIndex, Int32 dwNewLong);
+
+    [DllImport("gdi32.dll", EntryPoint = "DeleteObject")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool DeleteObject([In] IntPtr hObject);
 }

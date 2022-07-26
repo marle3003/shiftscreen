@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Windows;
+using System.Windows.Threading;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ShiftScreen.Settings;
@@ -40,6 +41,11 @@ namespace ShiftScreen
         {
             services.AddTransient(typeof(MainWindow));
             services.Configure<CaptureSettings>(Configuration.GetSection("capture"));
+        }
+
+        private void Application_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            MessageBox.Show($"An unhandled exception just occurred: {e.Exception.Message}\nStackTrace: {e.Exception.StackTrace}", "Unhandled Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 }

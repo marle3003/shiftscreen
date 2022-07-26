@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
@@ -11,6 +12,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Microsoft.Extensions.Options;
+using Microsoft.Win32;
 using ShiftScreen.Settings;
 using ShiftScreen.Utils;
 
@@ -37,6 +39,8 @@ namespace ShiftScreen.Views
             var icon = BitmapFrame.Create(stream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
             Icon = icon;
 
+            SystemEvents.SessionSwitch += SystemEvents_SessionSwitch;
+
             Update();
             _screen.Show();
         }
@@ -62,21 +66,38 @@ namespace ShiftScreen.Views
         private void CopyScreen(object sender, EventArgs e)
         {
             _bitmap.Lock();
-                using var screenBmp = new Bitmap(
-                    _bitmap.PixelWidth, _bitmap.PixelHeight, _bitmap.BackBufferStride,
-                    System.Drawing.Imaging.PixelFormat.Format32bppArgb, _bitmap.BackBuffer);
+            using var screenBmp = new Bitmap(
+                _bitmap.PixelWidth, _bitmap.PixelHeight, _bitmap.BackBufferStride,
+                System.Drawing.Imaging.PixelFormat.Format32bppArgb, _bitmap.BackBuffer);
 
-                using var g = Graphics.FromImage(screenBmp);
+            using var g = Graphics.FromImage(screenBmp);
+            try
+            {
                 g.CopyFromScreen(_settings.X, _settings.Y, 0, 0,
-                    new System.Drawing.Size()
+                    new System.Drawing.Size
                     {
-                        Width = _settings.Width,
-                        Height = _settings.Height
+                        Width = _bitmap.PixelWidth,
+                        Height = _bitmap.PixelHeight
                     }, CopyPixelOperation.SourceCopy);
                 drawCursor(g);
 
                 _bitmap.AddDirtyRect(new Int32Rect(0, 0, _bitmap.PixelWidth, _bitmap.PixelHeight));
-                _bitmap.Unlock();
+            }
+            catch (Win32Exception)
+            {
+                // if screen is locked CopyFromScreen throws this exception
+                // but since the screen lock event is often too slow, stop the timer
+                if (_timer!.IsEnabled)
+                {
+                    _timer.Stop();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            _bitmap.Unlock();
         }
 
         public void Dispose()
@@ -91,23 +112,30 @@ namespace ShiftScreen.Views
 
             if (User32.GetCursorInfo(out cursorInfo))
             {
-                if (cursorInfo.flags == User32.CURSOR_SHOWING && IsPointInScreen(cursorInfo.ptScreenPos.x, cursorInfo.ptScreenPos.y))
+                if (cursorInfo.flags == User32.CURSOR_SHOWING &&
+                    IsPointInScreen(cursorInfo.ptScreenPos.x, cursorInfo.ptScreenPos.y))
                 {
-                    var iconPointer = User32.CopyIcon(cursorInfo.hCursor);
-                    User32.ICONINFO iconInfo;
-                    int iconX, iconY;
-
-                    if (User32.GetIconInfo(iconPointer, out iconInfo))
+                    if (User32.GetIconInfo(cursorInfo.hCursor, out var iconInfo))
                     {
-                        // calculate the correct position of the cursor
-                        iconX = cursorInfo.ptScreenPos.x - iconInfo.xHotspot - _settings.X;
-                        iconY = cursorInfo.ptScreenPos.y - iconInfo.yHotspot - _settings.Y;
+                        try
+                        {
+                            // calculate the correct position of the cursor
+                            int iconX = cursorInfo.ptScreenPos.x - iconInfo.xHotspot - _settings.X;
+                            int iconY = cursorInfo.ptScreenPos.y - iconInfo.yHotspot - _settings.Y;
 
-                        // draw the cursor icon on top of the captured screen image
-                        User32.DrawIcon(g.GetHdc(), iconX, iconY, cursorInfo.hCursor);
-
-                        // release the handle created by call to g.GetHdc()
-                        g.ReleaseHdc();
+                            // draw the cursor icon on top of the captured screen image
+                            User32.DrawIcon(g.GetHdc(), iconX, iconY, cursorInfo.hCursor);
+                        }
+                        finally
+                        {
+                            // release the handle created by call to g.GetHdc()
+                            g.ReleaseHdc();
+                            // GetIconInfo creates bitmaps for the hbmMask and hbmColor members
+                            // of iconInfo. The calling application must manage these bitmaps and
+                            // delete them when they are no longer necessary.
+                            User32.DeleteObject(iconInfo.hbmColor);
+                            User32.DeleteObject(iconInfo.hbmMask);
+                        }
                     }
                 }
             }
@@ -170,6 +198,18 @@ namespace ShiftScreen.Views
                 FileName = "https://github.com/marle3003/shiftscreen",
                 UseShellExecute = true
             });
+        }
+
+        private void SystemEvents_SessionSwitch(object sender, SessionSwitchEventArgs e)
+        {
+            if (e.Reason == SessionSwitchReason.SessionLock)
+            {
+                _timer?.Stop();
+            }
+            else if (e.Reason == SessionSwitchReason.SessionUnlock)
+            {
+                _timer?.Start();
+            }
         }
     }
 }
