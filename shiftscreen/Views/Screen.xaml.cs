@@ -42,7 +42,15 @@ public partial class Screen : Window
 
         if (!string.IsNullOrWhiteSpace(_settings.Style.BorderColor))
         {
-            Path.Stroke = (SolidColorBrush)new BrushConverter().ConvertFrom(_settings.Style.BorderColor)!;
+            try
+            {
+                Path.Stroke = (SolidColorBrush)new BrushConverter().ConvertFrom(_settings.Style.BorderColor)!;
+            }
+            catch (FormatException)
+            {
+                MessageBox.Show($"Format of border color \"{_settings.Style.BorderColor}\" is not supported. Using default.", "Invalid color format", MessageBoxButton.OK, MessageBoxImage.Error);
+                Path.Stroke = (SolidColorBrush)new BrushConverter().ConvertFrom("green")!;
+            }
         }
         else
         {

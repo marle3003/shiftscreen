@@ -13,5 +13,5 @@ public class CaptureSettings
 public class Style
 {
     public int BorderWidth { get; set; } = 3;
-    public string BorderColor { get; set; } = "Green";
+    public string BorderColor { get; set; } = "green";
 }
