@@ -3,6 +3,8 @@ With shiftscreen you can select an area on the desktop which is mirrored in the 
 
 Shiftscreen also supports multiple monitors and includes your mouse pointer.
 
+![screenshot](screenshot.png)
+
 ## Using configuration file
 You can use a configuration file. An example file with default values is [here](appsettings.json). Place this in the same folder as shiftscreen.exe.
 The point x=0 and y=0 is at the top left of the main monitor.
