@@ -15,7 +15,7 @@ public enum GetWindowLongFields
 
 public class Window32
 {
-    public static IntPtr SetWindowLong(IntPtr hWnd, int nIndex, IntPtr dwNewLong)
+    public static void SetWindowLong(IntPtr hWnd, int nIndex, IntPtr dwNewLong)
     {
         int error = 0;
         IntPtr result = IntPtr.Zero;
@@ -38,7 +38,5 @@ public class Window32
         {
             throw new System.ComponentModel.Win32Exception(error);
         }
-
-        return result;
     }
 }
