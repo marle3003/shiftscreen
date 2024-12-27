@@ -3,7 +3,7 @@ With shiftscreen you can select an area on the desktop which is mirrored in the 
 
 Shiftscreen also supports multiple monitors and includes your mouse pointer.
 
-** The app must be completely on the screen, but not necessarily in the foreground, otherwise it will not work**.
+**The app must be completely on the screen, but not necessarily in the foreground, otherwise it will not work**.
 
 1. open Shiftscreen
 2. select an area that you want to share on your screen
